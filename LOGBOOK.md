@@ -1,21 +1,11 @@
 # Research Logbook
 
-## August
+## Maret
 
-### 2024-08-30
-- Developing the new feature
-- Fixing the bug
-    ```
-    def test():
-        pass
-    ```
+### 14 Maret - 27 Maret 2025
+- Belajar materi datareader
 
-## July
+## April
 
-### 2024-07-15
-- Researching the new feature
-- Updating the documentation
-    ```
-    def test():
-        pass
-    ```
+### 6 April - 10 April 2025
+- Belajar code datareader
