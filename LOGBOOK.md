@@ -9,3 +9,6 @@
 
 ### 6 April - 10 April 2025
 - Belajar code datareader
+
+### 16 April - 24 April 2025
+- Menyelesaikan code datareader

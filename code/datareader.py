@@ -99,16 +99,29 @@ class ShopeeComment(Dataset):
         text = re.sub(r'http\S+|www\S+|https\S+', '', text, flags=re.MULTILINE)
         # CLEANSING : menghapus special karakter
         text = re.sub(r'[^\w\s]', '', text)
-        # Normalization : mengubah kata kembali ke kata baku
-        text = re.sub(r'\b(?:[a-zA-Z]\.){2,}', '', text) 
         # menghapus spasi berlebih
         text = re.sub(r'\s+', ' ', text)
         # Tokenisasi
         words = nltk.word_tokenize(text)
+        
+        # Normalisasi kata tidak baku
+        normalized_words = {
+            'gk': 'tidak', 'gak': 'tidak',
+            'nggak': 'tidak', 'ga': 'tidak',
+            'bgt': 'banget', 'blom': 'belum',
+            'jg': 'juga', 'klian': 'kalian',
+            'sya': 'saya', 'aku': 'saya',
+            'smpai': 'sampai', 'trus': 'terus',
+            'ny': 'nya', 'nytrus': 'nya terus',
+            'dr': 'dari', 'dri': 'dari',
+            'tgl': 'tanggal', 'sudh': 'sudah',
+            'da': 'ada',
+        }
+        
+        # Normalization : mengganti kata tidak baku dengan kata baku
+        words = [normalized_words.get(word, word) for word in words]
         # STOPWORDS : menghapus kata yang tidak penting
         words = [word for word in words if word not in INDONESIAN_STOPWORDS]
-        # STEMMING : mengubah kata ke bentuk dasar
-        # words = [stemmer.stem(word) for word in words] 
         # Menggabungkan kembali kata-kata yang sudah di tokenisasi
         text = ' '.join(words)
         
@@ -186,7 +199,7 @@ class ShopeeComment(Dataset):
 
 if __name__ == "__main__":
     dataset = ShopeeComment(fold=1, split="val") # Intansi kelas 
-    data = dataset[15] # Ambil data pertama
+    data = dataset[30] # Ambil data pertama
     print(f"Input IDs: {data['input_ids']}")
     print(f"Original Text: {data['original_text']}")
     print(f"Processed Text: {data['processed_text']}")
