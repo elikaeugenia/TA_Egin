@@ -5,6 +5,7 @@ import os
 import json
 import torch
 from torch.utils.data import Dataset
+from datasets import load_dataset 
 from sklearn.model_selection import StratifiedKFold
 from transformers import AutoTokenizer
 import random 
@@ -19,20 +20,19 @@ except LookupError:
 
 try:
     nltk.data.find('corpora/stopwords')  
-except LookupError:
+except LookupError: 
     nltk.download('stopwords')
 
 INDONESIAN_STOPWORDS = set(stopwords.words('indonesian'))
 
-def load_normalization_dict(json_path='normalization_dict.json'):
-    base_path = os.path.dirname(os.path.abspath(__file__))
-    full_path = os.path.join(base_path, json_path)
-    
+def load_normalization_dict(json_path=None):
+    # Abaikan json_path karena mengambil dari Hugging Face
     try:
-        with open(full_path, 'r', encoding='utf-8') as f:
-            return json.load(f)
-    except FileNotFoundError:
-        print(f"Kamus normalisasi tidak ditemukan di {full_path}")
+        dataset = load_dataset("theonlydo/indonesia-slang", split="train")
+        normalization_dict = {row['slang']: row['formal'] for row in dataset}
+        return normalization_dict
+    except Exception as e:
+        print(f"Gagal load kamus dari HuggingFace: {e}")
         return {}
 
 class ShopeeComment(Dataset):
@@ -46,7 +46,7 @@ class ShopeeComment(Dataset):
         split="train",
         fold=0,
         augmentasi_file="augmentasi.json",
-        augment_prob=1.0,
+        augment_prob=0.5,
     ):
         
         self.augment_prob = augment_prob

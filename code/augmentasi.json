@@ -25,14 +25,38 @@
         "best": ["terbaik", "unggul", "paling baik", "superior"],
         "bermanfaat": ["berguna", "berdaya guna", "bermanfaat sekali", "bermanfaat besar"],
         "diskon": ["potongan harga", "harga murah", "harga diskon", "harga spesial"],
-        "lemot": ["lambat", "pelan", "tidak cepat", "lamban"]
+        "lemot": ["lambat", "pelan", "tidak cepat", "lamban"],
+        "gede": ["besar", "luas", "lebar", "tinggi"],
+        "makasih": ["terima kasih", "terimakasih", "thank you", "thanks"],
+        "mksh": ["makasih", "terima kasih", "terimakasih", "thank you"],
+        "barang": ["produk", "barang dagangan", "komoditas", "barang jualan"]
+
 
     },
 
     "replace_phrases": {
+        "barang bagus": ["produk bagus", "barang berkualitas", "produk berkualitas", "barang yang baik"],
+        "sesuai gambar": ["sesuai dengan gambar", "seperti di gambar", "sama seperti gambar", "mirip dengan gambar", "sesuai foto"],
+        "sesuai deskripsi": ["sesuai dengan deskripsi", "seperti di deskripsi", "sama seperti deskripsi", "mirip dengan deskripsi"],
+        "kualitas barang": ["kualitas produk", "kualitas barang yang baik", "kualitas produk yang baik", "kualitas barang berkualitas", "mutu produk"],
+        "sangat bagus": ["sangat baik", "sangat memuaskan", "sangat mantap", "sangat canggih"],
+        "barang tidak sesuai": ["produk tidak sesuai", "barang tidak cocok", "produk tidak cocok", "barang tidak sesuai dengan deskripsi"],
+        "pengiriman cepat": ["pengiriman cepat sekali", "pengiriman sangat cepat", "pengiriman kilat", "pengiriman segera"],
+        "pengiriman lambat": ["pengiriman lambat sekali", "pengiriman sangat lambat", "pengiriman pelan", "pengiriman tidak cepat"],
+        "respon cepat": ["respon cepat sekali", "respon sangat cepat", "respon kilat", "respon segera"],
+        "kurang puas": ["tidak puas", "kurang senang", "kurang bahagia", "kurang lega"],
+        "tidak sesuai": ["tidak cocok", "tidak sama", "tidak mirip", "tidak serupa"],
+        "barang sesuai": ["produk sesuai", "barang cocok", "produk cocok", "barang sesuai dengan deskripsi"],
+        "diskon besar": ["potongan harga besar", "harga murah besar", "harga diskon besar", "harga spesial besar"],
+        "harga murah": ["harga terjangkau", "harga ekonomis", "harga hemat", "harga diskon"],
+        "barang berkualitas": ["produk berkualitas", "barang yang baik", "produk yang baik", "barang bagus"],
+        "rekomendasi": ["saran", "anjuran", "rekomendasi produk", "petunjuk"],
+        "kecewa sekali": ["sangat kecewa", "kecewa berat", "kecewa total", "kecewa mendalam"],
+        "barang tidak bagus": ["produk tidak bagus", "barang tidak berkualitas", "produk tidak berkualitas", "barang yang tidak baik"],
+        "seller baik": ["penjual baik", "penjual yang baik", "penjual yang ramah", "penjual yang sopan"],
+        "packing rapi": ["pengemasan rapi", "kemasan rapi", "packing yang rapi", "pengemasan yang rapi"],
         "di": ["pada", "di dalam", "atas"],
         "buat": ["untuk", "bagi", "demi"],
         "sama": ["serupa", "seperti", "sama dengan"]
-
     }
 }
