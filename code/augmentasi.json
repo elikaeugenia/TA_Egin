@@ -1,0 +1,38 @@
+{
+    "synonyms": {
+        "bagus": ["baik", "hebat", "mantap", "keren", "canggih"],
+        "murah": ["ekonomis", "terjangkau", "hemat", "diskon"],
+        "puas": ["senang", "bahagia", "lega", "sukacita"],
+        "terbaik": ["unggul", "paling baik", "superior", "terhebat"],
+        "cepat": ["cepat sekali", "segera", "kilat", "cepat tanggap"],
+        "good": ["baik", "bagus", "hebat", "mantap"],
+        "mantap": ["hebat", "keren", "canggih", "bagus"],
+        "membantu": ["menolong", "mendukung", "memfasilitasi", "memberi bantuan"],
+        "senang": ["bahagia", "gembira", "ceria", "puas"],
+        "sukses": ["berhasil", "lulus", "menang", "mendapatkan hasil baik"],
+        "oke": ["baik", "bagus", "mantap", "keren"],
+        "luar biasa": ["hebat", "fantastis", "menakjubkan", "spektakuler"],
+        "lengkap": ["komplit", "sempurna", "total", "utuh"],
+        "lambat": ["pelan", "tidak cepat", "lamban", "tidak gesit"],
+        "jelek": ["buruk", "jelek sekali", "tidak baik", "cacat"],
+        "baik": ["bagus", "baik sekali", "hebat", "mantap"],
+        "kecewa": ["tidak puas", "frustrasi", "kecewa sekali", "putus asa"],
+        "rekomendasi": ["saran", "anjuran", "rekomendasi", "petunjuk"],
+        "mantul": ["mantap betul", "hebat sekali", "keren banget", "luar biasa"],
+        "lelet": ["lambat", "pelan", "tidak cepat", "lamban"],
+        "memuaskan": ["memuaskan sekali", "sangat memuaskan", "puas", "lega"],
+        "top": ["terbaik", "unggul", "paling baik", "superior"],
+        "best": ["terbaik", "unggul", "paling baik", "superior"],
+        "bermanfaat": ["berguna", "berdaya guna", "bermanfaat sekali", "bermanfaat besar"],
+        "diskon": ["potongan harga", "harga murah", "harga diskon", "harga spesial"],
+        "lemot": ["lambat", "pelan", "tidak cepat", "lamban"]
+
+    },
+
+    "replace_phrases": {
+        "di": ["pada", "di dalam", "atas"],
+        "buat": ["untuk", "bagi", "demi"],
+        "sama": ["serupa", "seperti", "sama dengan"]
+
+    }
+}

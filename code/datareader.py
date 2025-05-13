@@ -7,15 +7,33 @@ import torch
 from torch.utils.data import Dataset
 from sklearn.model_selection import StratifiedKFold
 from transformers import AutoTokenizer
+import random 
 import nltk
+from nltk.tokenize import word_tokenize
 from nltk.corpus import stopwords
 
-# Download NLTK resources
-nltk.data.find('tokenizers/punkt')
-nltk.data.find('corpora/stopwords')
-nltk.download('punkt_tab')
+try:
+    nltk.data.find('tokenizers/punkt')
+except LookupError:
+    nltk.download('punkt')
+
+try:
+    nltk.data.find('corpora/stopwords')  
+except LookupError:
+    nltk.download('stopwords')
 
 INDONESIAN_STOPWORDS = set(stopwords.words('indonesian'))
+
+def load_normalization_dict(json_path='normalization_dict.json'):
+    base_path = os.path.dirname(os.path.abspath(__file__))
+    full_path = os.path.join(base_path, json_path)
+    
+    try:
+        with open(full_path, 'r', encoding='utf-8') as f:
+            return json.load(f)
+    except FileNotFoundError:
+        print(f"Kamus normalisasi tidak ditemukan di {full_path}")
+        return {}
 
 class ShopeeComment(Dataset):
     def __init__(
@@ -23,36 +41,95 @@ class ShopeeComment(Dataset):
         file_path="dataset.xlsx",
         tokenizer_name="indobenchmark/indobert-base-p1",
         folds_file="shopee_datareader_simple_folds.json",
+        normalization_file="normalization_dict.json", 
         random_state=2025,
         split="train",
         fold=0,
-        
+        augmentasi_file="augmentasi.json",
+        augment_prob=1.0,
     ):
         
+        self.augment_prob = augment_prob
         self.file_path = file_path
         self.folds_file = folds_file
         self.random_state = random_state
         self.split = split
         self.fold = fold
+        self.augmentasi_data = self.load_augmentasi(augmentasi_file)
         
         # Initialize Tokenizer
         self.tokenizer = AutoTokenizer.from_pretrained(tokenizer_name)
+        # Load Normalization Dictionary
+        self.normalization_dict = load_normalization_dict(normalization_file)
         
         # Load Dataset
         self.load_data()
-        # print(f"DataFrame: {self.df}") -jalanin pertama
-        
-        # Setup 5-Fold Cross Validation
         # Bagian ini membuat self.folds_indices yang berisi train_indices dan val_indices (fold 0-4)
         self.setup_folds()
-        
-        # Untuk print seluruh folds 0-4
-        # print(f"self.folds_indices: {self.folds_indices}") 
-       
-        # Setup Indices
+
         # Bagian ini mempersiapkan self.indices yang berisi data yang akan di training yang akan dipilih berdasarkan 'split' dan 'fold'
         self.setup_indices()
-        # print(f"self.indices: {self.indices}") # Hanya print yang sudah dipisahkan misalnya hanya fold 0 untuk training
+    
+    # Load Augmentation Data     
+    def load_augmentasi(self, file_path):
+        base_path = os.path.dirname(os.path.abspath(__file__))
+        full_path = os.path.join(base_path, file_path)
+    
+        try:
+            with open(full_path, 'r', encoding='utf-8') as f:
+                return json.load(f)
+        except FileNotFoundError:
+            print(f"File augmentasi tidak ditemukan di {full_path}")
+            return {}  # Kembalikan dict kosong agar tetap bisa jalan
+
+    def random_typo(self, text):
+        word = text.split()
+        if len(word) < 1:
+            return text
+        idx = random.randint(0, len(word) - 1)
+        word = word[idx]
+        if len(word) > 1:
+            char_list = list(word)
+            i = random.randint(0, len(char_list) - 2)
+            char_list[i], char_list[i+1] = char_list[i+1], char_list[i]
+            word[idx] = ''.join(char_list)
+        return ' '.join(word)
+    
+    def random_swap(self, text):
+        word = text.split()
+        if len(word) < 2:
+            return text
+        idx1, idx2 = random.sample(range(len(word)), 2)
+        word[idx1], word[idx2] = word[idx2], word[idx1]
+        return ' '.join(word)
+    
+    def random_delete(self, text):
+        word = text.split()
+        if len(word) <= 1:
+            return text
+        idx = random.randint(0, len(word) - 1)
+        del word[idx]
+        return ' '.join(word)
+    
+    def augment_text(self, text):
+        # Augmentasi dengan kata yang ada di kamus augmentasi
+        for phrase, replacements in self.augmentasi_data.get("replace_phrases", {}).items():
+            if phrase in text:
+                text = text.replace(phrase, random.choice(replacements))
+        words = text.split()
+        for i, word in enumerate(words):
+            if word in self.augmentasi_data.get("synonyms", {}):
+                words[i] = random.choice(self.augmentasi_data["synonyms"][word])
+        text = ' '.join(words)
+        tokens = word_tokenize(text)
+        tokens = [t for t in tokens if t not in INDONESIAN_STOPWORDS]
+        text = ' '.join(tokens)
+        # Augmentasi dengan typo, swap, delete
+        text = self.random_typo(text)
+        text = self.random_swap(text)
+        text = self.random_delete(text)
+        
+        return text
         
     def __len__(self):
         # Mengembalikan panjang data
@@ -103,23 +180,12 @@ class ShopeeComment(Dataset):
         text = re.sub(r'\s+', ' ', text)
         # Tokenisasi
         words = nltk.word_tokenize(text)
-        
-        # Normalisasi kata tidak baku
-        normalized_words = {
-            'gk': 'tidak', 'gak': 'tidak',
-            'nggak': 'tidak', 'ga': 'tidak',
-            'bgt': 'banget', 'blom': 'belum',
-            'jg': 'juga', 'klian': 'kalian',
-            'sya': 'saya', 'aku': 'saya',
-            'smpai': 'sampai', 'trus': 'terus',
-            'ny': 'nya', 'nytrus': 'nya terus',
-            'dr': 'dari', 'dri': 'dari',
-            'tgl': 'tanggal', 'sudh': 'sudah',
-            'da': 'ada',
-        }
-        
-        # Normalization : mengganti kata tidak baku dengan kata baku
-        words = [normalized_words.get(word, word) for word in words]
+        # Normalization : dengan kamus dari file JSON
+        words = [self.normalization_dict.get(word, word) for word in words]
+        # Augmentasi : dengan kamus augmentasi
+        for phrase, replacements in self.augmentasi_data.get("replace_phrases", {}).items():
+            if phrase in words:
+                text = text.replace(phrase, random.choice(replacements))
         # STOPWORDS : menghapus kata yang tidak penting
         words = [word for word in words if word not in INDONESIAN_STOPWORDS]
         # Menggabungkan kembali kata-kata yang sudah di tokenisasi
@@ -151,7 +217,7 @@ class ShopeeComment(Dataset):
             
         self.folds_indices = folds_data['fold_indices']
         self.folds = self.folds_indices
-        print(f"Menggunakan {folds_data['n_folds']} folds dengan {folds_data['n_samples']} samples") 
+        print(f"Menggunakan {folds_data['n_folds']} folds dengan {folds_data['n_samples']} samples dataset") 
 
         # for fold_name, indices in self.folds.items():
         #    print(f"{fold_name}:")
@@ -198,13 +264,13 @@ class ShopeeComment(Dataset):
         self.df = self.df[(self.df['rating'] >= 1) & (self.df['rating'] <= 5)] # Filter rating between 1 and 5
 
 if __name__ == "__main__":
-    dataset = ShopeeComment(fold=1, split="val") # Intansi kelas 
-    data = dataset[30] # Ambil data pertama
+    dataset = ShopeeComment(fold=1, split="train") # Instansi kelas 
+    random_index = random.randint(0, len(dataset) - 1) # Pilih indeks secara acak
+    data = dataset[random_index] # Ambil data dengan indeks acak
+    # data = dataset[3000] # Ambil data pertama
     print(f"Input IDs: {data['input_ids']}")
     print(f"Original Text: {data['original_text']}")
     print(f"Processed Text: {data['processed_text']}")
     print(f"Original Index: {data['original_index']}")
+    print(f"Label (Rating): {data['labels']}")
     
-    
-    # print(f"Index: {idx}, Comment: {comment}, Rating: {rating}") # Print data pertama
-    # print(f"Processed Comment: {comment_processed}") # Print data yang sudah di pre-process
