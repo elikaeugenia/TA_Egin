@@ -46,10 +46,19 @@ class ShopeeComment(Dataset):
         split="train",
         fold=0,
         augmentasi_file="augmentasi.json",
-        augment_prob=0.5,
+        typo_prob=0.1,         
+        swap_prob=0.1,         
+        delete_prob=0.1,      
+        synonym_prob=0.1,      
+        phrase_prob=0.1, 
     ):
-        
-        self.augment_prob = augment_prob
+         
+        # Initialize parameters 
+        self.typo_prob = typo_prob  
+        self.swap_prob = swap_prob
+        self.delete_prob = delete_prob
+        self.synonym_prob = synonym_prob
+        self.phrase_prob = phrase_prob         
         self.file_path = file_path
         self.folds_file = folds_file
         self.random_state = random_state
@@ -83,17 +92,17 @@ class ShopeeComment(Dataset):
             return {}  # Kembalikan dict kosong agar tetap bisa jalan
 
     def random_typo(self, text):
-        word = text.split()
-        if len(word) < 1:
+        words = text.split()
+        if len(words) < 1:
             return text
-        idx = random.randint(0, len(word) - 1)
-        word = word[idx]
+        idx = random.randint(0, len(words) - 1)
+        word = words[idx]
         if len(word) > 1:
             char_list = list(word)
             i = random.randint(0, len(char_list) - 2)
             char_list[i], char_list[i+1] = char_list[i+1], char_list[i]
-            word[idx] = ''.join(char_list)
-        return ' '.join(word)
+            words[idx] = ''.join(char_list)
+        return ' '.join(words)
     
     def random_swap(self, text):
         word = text.split()
@@ -112,23 +121,31 @@ class ShopeeComment(Dataset):
         return ' '.join(word)
     
     def augment_text(self, text):
-        # Augmentasi dengan kata yang ada di kamus augmentasi
-        for phrase, replacements in self.augmentasi_data.get("replace_phrases", {}).items():
-            if phrase in text:
-                text = text.replace(phrase, random.choice(replacements))
+        # Phrase replace
+        if random.random() < self.phrase_prob:
+            for phrase, replacements in self.augmentasi_data.get("replace_phrases", {}).items():
+                if phrase in text:
+                    text = text.replace(phrase, random.choice(replacements))
+        # Synonym replacement
         words = text.split()
-        for i, word in enumerate(words):
-            if word in self.augmentasi_data.get("synonyms", {}):
-                words[i] = random.choice(self.augmentasi_data["synonyms"][word])
+        if random.random() < self.synonym_prob:
+            for i, word in enumerate(words):
+                if word in self.augmentasi_data.get("synonyms", {}):
+                    words[i] = random.choice(self.augmentasi_data["synonyms"][word])
         text = ' '.join(words)
         tokens = word_tokenize(text)
         tokens = [t for t in tokens if t not in INDONESIAN_STOPWORDS]
         text = ' '.join(tokens)
-        # Augmentasi dengan typo, swap, delete
-        text = self.random_typo(text)
-        text = self.random_swap(text)
-        text = self.random_delete(text)
-        
+        # Typo
+        if random.random() < self.typo_prob:
+            text = self.random_typo(text)
+        # Swap
+        if random.random() < self.swap_prob:
+            text = self.random_swap(text)
+        # Delete
+        if random.random() < self.delete_prob:
+            text = self.random_delete(text)
+                
         return text
         
     def __len__(self):
@@ -176,20 +193,22 @@ class ShopeeComment(Dataset):
         text = re.sub(r'http\S+|www\S+|https\S+', '', text, flags=re.MULTILINE)
         # CLEANSING : menghapus special karakter
         text = re.sub(r'[^\w\s]', '', text)
-        # menghapus spasi berlebih
+        # Menghapus spasi berlebih
         text = re.sub(r'\s+', ' ', text)
+        # Replacement : mengganti kata dengan sinonim
+        for phrase, replacements in self.augmentasi_data.get("replace_phrases", {}).items():
+            if phrase in text:
+                text = text.replace(phrase, random.choice(replacements))
         # Tokenisasi
         words = nltk.word_tokenize(text)
         # Normalization : dengan kamus dari file JSON
         words = [self.normalization_dict.get(word, word) for word in words]
-        # Augmentasi : dengan kamus augmentasi
-        for phrase, replacements in self.augmentasi_data.get("replace_phrases", {}).items():
-            if phrase in words:
-                text = text.replace(phrase, random.choice(replacements))
         # STOPWORDS : menghapus kata yang tidak penting
         words = [word for word in words if word not in INDONESIAN_STOPWORDS]
         # Menggabungkan kembali kata-kata yang sudah di tokenisasi
         text = ' '.join(words)
+        # Augmentasi : typo, swap, delete
+        text = self.augment_text(text)
         
         return text             
         
@@ -265,12 +284,11 @@ class ShopeeComment(Dataset):
 
 if __name__ == "__main__":
     dataset = ShopeeComment(fold=1, split="train") # Instansi kelas 
-    random_index = random.randint(0, len(dataset) - 1) # Pilih indeks secara acak
-    data = dataset[random_index] # Ambil data dengan indeks acak
-    # data = dataset[3000] # Ambil data pertama
+    # random_index = random.randint(0, len(dataset) - 1) # Pilih indeks secara acak
+    # data = dataset[random_index] # Ambil data dengan indeks acak
+    data = dataset[163] # Ambil data pertama   
     print(f"Input IDs: {data['input_ids']}")
     print(f"Original Text: {data['original_text']}")
     print(f"Processed Text: {data['processed_text']}")
     print(f"Original Index: {data['original_index']}")
     print(f"Label (Rating): {data['labels']}")
-    
