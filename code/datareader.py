@@ -159,6 +159,11 @@ class ShopeeComment(Dataset):
         # Mengambil data komentar dari rating
         komentar = str(self.df.iloc[idx]['comment'])
         rating = self.df.iloc[idx]['rating']
+        # Mengubah rating menjadi label biner
+        if rating >=3:
+            label = 1
+        else:
+            label = 0
         
         # Melakukan Pre-Processing
         comment_processed = self.preprocess_text(komentar)
@@ -177,7 +182,7 @@ class ShopeeComment(Dataset):
         data = {
             'input_ids': encoding['input_ids'].flatten(),
             'attention_mask': encoding['attention_mask'].flatten(),
-            'labels': torch.tensor(rating-1, dtype=torch.long),
+            'labels': torch.tensor(label, dtype=torch.long),
             'original_text': komentar,
             'processed_text': comment_processed,
             'original_rating': rating,

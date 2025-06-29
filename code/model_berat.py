@@ -4,7 +4,7 @@ import torch.nn.functional as F
 from torchinfo import summary
 
 class TextCNN(nn.Module):
-    def __init__(self, vocab_size, embed_dim=512, num_classes=5, do=0.2):
+    def __init__(self, vocab_size, embed_dim=512, num_classes=2, do=0.2):
         super(TextCNN, self).__init__()
         self.embedding = nn.Embedding(vocab_size, embed_dim, padding_idx=0)
         self.conv1 = nn.Conv1d(embed_dim, 256, kernel_size=3)

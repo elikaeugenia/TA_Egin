@@ -4,12 +4,13 @@ import torch.nn.functional as F
 from torchinfo import summary
 
 class TextCNN(nn.Module):
-    def __init__(self, vocab_size, embed_dim=100, num_classes=5, do=0.2):
+    def __init__(self, vocab_size, embed_dim=100, num_classes=2, do=0.2):
         super(TextCNN, self).__init__()
         self.embedding = nn.Embedding(vocab_size, embed_dim, padding_idx=0)
-        self.conv1 = nn.Conv1d(embed_dim, 50, kernel_size=3)
-        self.conv2 = nn.Conv1d(embed_dim, 50, kernel_size=4)
-        self.conv3 = nn.Conv1d(embed_dim, 50, kernel_size=5)
+        # Layer CNN yang digunakan:
+        self.conv1 = nn.Conv1d(embed_dim, 50, kernel_size=3)  # Conv1D kernel size 3
+        self.conv2 = nn.Conv1d(embed_dim, 50, kernel_size=4)  # Conv1D kernel size 4
+        self.conv3 = nn.Conv1d(embed_dim, 50, kernel_size=5)  # Conv1D kernel size 5
         self.dropout = nn.Dropout(do)
         self.fc = nn.Linear(150, num_classes)
  

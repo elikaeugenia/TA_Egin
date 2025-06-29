@@ -1,0 +1,41 @@
+{
+  "os": "Windows-11-10.0.22631-SP0",
+  "python": "CPython 3.12.7",
+  "startedAt": "2025-06-28T13:38:58.578238Z",
+  "program": "c:\\Users\\user\\Documents\\TA (R)\\baruu\\code\\train.py",
+  "codePath": "code\\train.py",
+  "git": {
+    "remote": "https://github.com/elikaeugenia/TA_Egin.git",
+    "commit": "254aa53d49fd388386abe35a359ed71bcc15d16a"
+  },
+  "root": "C:\\Users\\user\\Documents\\TA (R)\\baruu",
+  "host": "EGIN",
+  "executable": "C:\\Users\\user\\anaconda3\\python.exe",
+  "codePathLocal": "code\\train.py",
+  "cpu_count": 4,
+  "cpu_count_logical": 8,
+  "gpu": "NVIDIA GeForce MX330",
+  "gpu_count": 1,
+  "disk": {
+    "/": {
+      "total": "510403088384",
+      "used": "253632745472"
+    }
+  },
+  "memory": {
+    "total": "8317575168"
+  },
+  "cpu": {
+    "count": 4,
+    "countLogical": 8
+  },
+  "gpu_nvidia": [
+    {
+      "name": "NVIDIA GeForce MX330",
+      "memoryTotal": "2147483648",
+      "cudaCores": 384,
+      "architecture": "Pascal"
+    }
+  ],
+  "cudaVersion": "11.6"
+}

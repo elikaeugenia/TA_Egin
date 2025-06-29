@@ -111,7 +111,7 @@ def main():
     parser.add_argument("--batch_size", type=int, default=32, help="Batch size for training")
     parser.add_argument("--epochs", type=int, default=5, help="Number of training epochs")
     parser.add_argument("--learning_rate", type=float, default=1e-4, help="Learning rate for optimizer")
-    parser.add_argument("--num_classes", type=int, default=5, help="Number of output classes")
+    parser.add_argument("--num_classes", type=int, default=2, help="Number of output classes")
     parser.add_argument("--model_name", type=str, default="sedang", choices=["ringan", "sedang", "berat"], help="Model complexity: ringan, sedang, berat")
     parser.add_argument("--name", type=str, default="experiment", help="Name of the experiment")
     args = parser.parse_args()
@@ -119,8 +119,9 @@ def main():
 
     wandb.init(
         project="cnn_shopee",
-        name=args.name,
-        config=vars(args)
+        name="exp_20250629",
+        # name=args.name,
+        # config=vars(args)
     )
 
     BATCH_SIZE = args.batch_size
@@ -161,7 +162,7 @@ def main():
         normalization_file="normalization_dict.json", 
         random_state=2025,
         split="val",
-        fold=1,
+        fold=0,
         augmentasi_file="augmentasi.json",
         typo_prob=0,         
         swap_prob=0,         
@@ -188,6 +189,9 @@ def main():
     print(f"Using device: {device}")
     model = get_model(model_name, vocab_size, NUM_CLASSES, args.dropout).to(device)
 
+    from torchinfo import summary
+    print("\nModel Summary:")
+    summary(model, input_size=(BATCH_SIZE, MAX_LEN), dtypes=[torch.long], col_names=["input_size", "output_size", "num_params", "params_percent"])
 
     # initialize the optimizer
     optimizer = get_optimizer(args.optimizer_name, model.parameters(), LEARNING_RATE)
