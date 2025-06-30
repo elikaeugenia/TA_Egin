@@ -118,8 +118,9 @@ def main():
 
 
     wandb.init(
-        project="cnn_shopee",
-        name="exp_20250629",
+        project="cnn_shopeecomment",
+        name="exp_20250629_s4",
+        mode="online" 
         # name=args.name,
         # config=vars(args)
     )
