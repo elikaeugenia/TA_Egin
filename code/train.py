@@ -119,8 +119,8 @@ def main():
 
     wandb.init(
         project="cnn_shopeecomment",
-        name="exp_20250629_s4",
-        mode="online" 
+        name="exp_20250630_s0",
+        mode="online"   
         # name=args.name,
         # config=vars(args)
     )
@@ -177,7 +177,7 @@ def main():
     train_loader = DataLoader(train_dataset, batch_size=BATCH_SIZE, shuffle=True)
     val_loader = DataLoader(val_dataset, batch_size=BATCH_SIZE)
     
-    # # Print debug information 
+    # Print debug information 
     # print("\nDebug info:")
     # print(f"Device: {device}")
     # print(f"Vocab size: {vocab_size}")
