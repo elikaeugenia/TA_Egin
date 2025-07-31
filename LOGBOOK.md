@@ -26,3 +26,15 @@
 - Hasil train ke wandb
 - Menjalankan model ringan, sedang, berat dan mencari epoch terbaik dari setiap fold
 - Membuat torchinfo summary
+
+## Juli
+
+### Revisi Sempro
+- Validasi pelabelan
+- Rating 3, sentimen netral
+- Stopwords removal, Daftar stopwords Bahasa Indonesia yang digunakan diperoleh dari Natural Language Toolkit (NLTK), yaitu pustaka Python untuk pemrosesan bahasa alami
+- Augmentasi dilakukan secara seri (dilakukan satu per satu secara berurutan pada teks yang sama)
+- “contextual word/sentence” pada TextCNN
+- Trainable embedding layer dari PyTorch
+- Loss function 
+- Pelatihan model yang digunakan yaitu training from scratch (dilatih dari awal)

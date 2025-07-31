@@ -108,7 +108,7 @@ def main():
     parser.add_argument("--augment_prob", type=float, default=1.0, help="Probability of applying augmentation")
     parser.add_argument("--dropout", type=float, default=0.2, help="Dropout rate for the CNN")
     parser.add_argument("--max_len", type=int, default=128, help="Maximum token length for input")
-    parser.add_argument("--batch_size", type=int, default=32, help="Batch size for training")
+    parser.add_argument("--batch_size", type=int, default=16, help="Batch size for training")
     parser.add_argument("--epochs", type=int, default=5, help="Number of training epochs")
     parser.add_argument("--learning_rate", type=float, default=1e-4, help="Learning rate for optimizer")
     parser.add_argument("--num_classes", type=int, default=2, help="Number of output classes")
