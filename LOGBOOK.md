@@ -38,3 +38,9 @@
 - Trainable embedding layer dari PyTorch
 - Loss function 
 - Pelatihan model yang digunakan yaitu training from scratch (dilatih dari awal)
+
+## Agustus
+
+### 4 Agustus - 14 Agustus
+- Menambahkan code precision, recall, f1 score
+- Menambahkan code confusion matrix 
