@@ -1,2 +1,2 @@
-# Project Title
+# PENERAPAN ARSITEKTUR TEXTCNN UNTUK ANALISIS SENTIMEN ULASAN PENGGUNA APLIKASI SHOPEE DI GOOGLE PLAY STORE
 This is the short explanation about the title of the project.
